@@ -1,20 +1,7 @@
-// app/api/doctors/[id]/route.js
+// app/api/clinics/[id]/route.js
 import prisma from "@/lib/prisma";
 
 export const runtime = "nodejs";
-
-export async function GET(_req, { params }) {
-  const { id } = await params;
-
-  try {
-    const doctor = await prisma.doctor.findUnique({ where: { id } });
-    if (!doctor) return new Response("Not found", { status: 404 });
-    return Response.json(doctor);
-  } catch (err) {
-    console.error("GET /api/doctors/[id] error", err);
-    return new Response("Error", { status: 500 });
-  }
-}
 
 export async function PUT(req, { params }) {
   const { id } = await params;
@@ -22,29 +9,28 @@ export async function PUT(req, { params }) {
   try {
     const body = await req.json();
 
-    const doctor = await prisma.doctor.update({
+    const clinic = await prisma.clinic.update({
       where: { id },
       data: {
-        firstName: body.firstName,
-        lastName: body.lastName,
-        speciality: body.speciality || null,
-        clinicId: body.clinicId || null,
-        clinicName: body.clinicName || null,
+        name: body.clinicName || "",
+        type: body.speciality || null,
         country: body.country || null,
         city: body.city || null,
         email: body.email || null,
         phone: body.phone || null,
-        whatsapp: body.whatsapp || null,
-        licenseNo: body.licenseNo || null,
-        status: body.status || "trial",
+        contactName:
+          (body.firstName?.trim() || "") +
+          (body.lastName ? " " + body.lastName.trim() : ""),
+        contactPhone: body.whatsapp || null,
+        status: body.status || "active",
         notes: body.notes || null,
       },
     });
 
-    return Response.json(doctor);
+    return Response.json(clinic);
   } catch (err) {
-    console.error("PUT /api/doctors/[id] error", err);
-    return new Response("Error updating doctor", { status: 500 });
+    console.error("PUT /api/clinics/[id] error", err);
+    return new Response("Error updating clinic", { status: 500 });
   }
 }
 
@@ -52,10 +38,10 @@ export async function DELETE(_req, { params }) {
   const { id } = await params;
 
   try {
-    await prisma.doctor.delete({ where: { id } });
+    await prisma.clinic.delete({ where: { id } });
     return new Response(null, { status: 204 });
   } catch (err) {
-    console.error("DELETE /api/doctors/[id] error", err);
-    return new Response("Error deleting doctor", { status: 500 });
+    console.error("DELETE /api/clinics/[id] error", err);
+    return new Response("Error deleting clinic", { status: 500 });
   }
 }
