@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-// ❌ BU YANLIŞ: import { supabase } from "../lib/supabaseClient";
-// ✅ BÖYLE OLSUN:
 import { supabase } from "@/lib/supabaseClient";
 
 export default function LoginPage() {
@@ -18,7 +16,6 @@ export default function LoginPage() {
     setErrorMsg("");
     setLoading(true);
 
-    // 1) Supabase email / password login
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -38,7 +35,7 @@ export default function LoginPage() {
     }
 
     try {
-      // 2) Önce super_admins tablosuna bak
+      // Süper admin mi?
       const { data: superAdmin } = await supabase
         .from("super_admins")
         .select("id")
@@ -50,7 +47,7 @@ export default function LoginPage() {
         return;
       }
 
-      // 3) Doktor mu?
+      // Doktor mu?
       const { data: doctor } = await supabase
         .from("doctors")
         .select("id")
@@ -58,11 +55,11 @@ export default function LoginPage() {
         .maybeSingle();
 
       if (doctor) {
-        router.push("/doctor"); // doktor panelini sonra yapacağız
+        router.push("/doctor");
         return;
       }
 
-      // 4) Asistan mı?
+      // Asistan mı?
       const { data: assistant } = await supabase
         .from("assistants")
         .select("id")
@@ -70,11 +67,11 @@ export default function LoginPage() {
         .maybeSingle();
 
       if (assistant) {
-        router.push("/assistant"); // assistant paneli sonra
+        router.push("/assistant");
         return;
       }
 
-      // 5) Hasta mı?
+      // Hasta mı?
       const { data: patient } = await supabase
         .from("patients")
         .select("id")
@@ -82,13 +79,12 @@ export default function LoginPage() {
         .maybeSingle();
 
       if (patient) {
-        router.push("/patient"); // hasta paneli sonra
+        router.push("/patient");
         return;
       }
 
-      // Hiçbiri değilse:
       setErrorMsg(
-        "Hesap başarıyla giriş yaptı, fakat rol atanmadı. Lütfen yöneticiyle iletişime geçin."
+        "Giriş başarılı ama kullanıcıya rol atanmadı. Lütfen yöneticiyle iletişime geçin."
       );
     } catch (err) {
       console.error(err);
@@ -116,7 +112,12 @@ export default function LoginPage() {
 
         <form
           onSubmit={handleSubmit}
-          style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 16 }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+            marginTop: 16,
+          }}
         >
           <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             <span>E-posta</span>
