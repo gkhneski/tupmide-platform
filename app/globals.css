@@ -8,13 +8,14 @@
 }
 
 .admin-sidebar {
-  width: 260px;
-  padding: 24px 20px;
-  border-right: 1px solid rgba(148, 163, 184, 0.2);
-  background: radial-gradient(circle at top, #111827, #020617);
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 260px;          /* senin sidebar genişliğin neyse */
+  height: 100vh;
+  overflow-y: auto;      /* menü uzarsa kendi içinde scroll olsun */
+  z-index: 50; 
 }
 
 .logo {
@@ -80,8 +81,9 @@
 
 /* Main area */
 .admin-main {
-  flex: 1;
-  padding: 24px 32px;
+  margin-left: 260px;    /* sidebar genişliğiyle aynı olmalı */
+  min-height: 100vh;
+  padding: 32px 56px;
 }
 
 .admin-header {
@@ -187,4 +189,925 @@
 
 .link-small:hover {
   text-decoration: underline;
+}
+/* ===== SlimIQ Super Admin – SignGaze Style Light Theme ===== */
+
+/* Shell */
+.admin-shell {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f6fa;
+  color: #0f172a;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
+}
+
+/* Sidebar */
+.admin-sidebar {
+  width: 260px;
+  background: #ffffff;
+  border-right: 1px solid #eceff4;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18px;
+}
+
+/* collapsed state (optional) */
+.admin-sidebar.collapsed {
+  width: 80px;
+}
+
+/* Sidebar top: logo + burger */
+.admin-sidebar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.admin-logo-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-logo-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #111827;
+  color: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.admin-logo-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.admin-sidebar-toggle {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Sidebar nav */
+.admin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: auto;
+}
+
+.admin-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.admin-nav-link:hover {
+  background: #f1f5f9;
+  color: #111827;
+}
+
+.admin-nav-link.active {
+  background: #111827;
+  color: #ffffff;
+}
+
+.admin-nav-link.disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.admin-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-nav-icon {
+  font-size: 16px;
+}
+
+.admin-nav-label {
+  white-space: nowrap;
+}
+
+.admin-nav-pill {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #6b7280;
+}
+
+/* Sidebar bottom helpers */
+.admin-sidebar-bottom {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-help-card {
+  border-radius: 14px;
+  background: #f9fafb;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.admin-help-link {
+  font-size: 12px;
+  color: #111827;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.admin-help-link:hover {
+  text-decoration: underline;
+}
+
+.settings-link {
+  margin-top: 4px;
+}
+
+/* MAIN AREA */
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Topbar */
+.admin-topbar {
+  height: 64px;
+  background: #ffffff;
+  border-bottom: 1px solid #eceff4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.admin-topbar-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-top-title {
+  font-size: 18px;
+  margin: 0;
+}
+
+.admin-top-sub {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.admin-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-top-role-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  font-size: 12px;
+  color: #4b5563;
+}
+
+/* notification & user */
+.icon-button {
+  position: relative;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  color: #6b7280;
+}
+
+.icon-button:hover {
+  color: #111827;
+}
+
+.icon-button .dot {
+  position: absolute;
+  top: 2px;
+  right: -1px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #ef4444;
+}
+
+.admin-top-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-top-user .avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #111827;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.admin-top-user .info {
+  font-size: 12px;
+}
+
+.admin-top-user .name {
+  font-weight: 600;
+}
+
+.admin-top-user .role {
+  color: #9ca3af;
+}
+
+/* Content wrapper */
+.admin-content {
+  padding: 20px 24px;
+}
+
+/* Dashboard layout */
+.admin-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* KPI ROW */
+.admin-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+@media (max-width: 1100px) {
+  .admin-kpi-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kpi-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 6px 16px rgba(17, 24, 39, 0.04);
+  border: 1px solid #eceff4;
+}
+
+/* KPI ikonları – sade, arka plansız, modern */
+.kpi-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+/* Sadece ikon rengi, arka plan yok */
+.kpi-blue {
+  color: #2563eb;
+}
+
+.kpi-green {
+  color: #16a34a;
+}
+
+.kpi-pink {
+  color: #ec4899;
+}
+
+.kpi-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kpi-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.kpi-value {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.kpi-sub {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* MIDDLE GRID (chart + credit) */
+.admin-middle-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2.3fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1100px) {
+  .admin-middle-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-chart-card,
+.admin-credit-card,
+.dashboard-section {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 16px 18px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+  border: 1px solid #eceff4;
+}
+
+/* Chart card */
+.admin-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.admin-chart-header h2 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.muted {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* Credit card */
+.credit-header h3 {
+  margin: 0 0 2px;
+  font-size: 15px;
+}
+
+.credit-header .muted {
+  font-size: 12px;
+}
+
+.credit-balance {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.credit-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.credit-value {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.credit-sub {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.credit-mini-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+  margin-bottom: 16px;
+}
+
+.mini-label {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.mini-value {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Buttons */
+.btn-primary,
+.btn-secondary {
+  border-radius: 999px;
+  font-size: 14px;
+  padding: 8px 16px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: #111827;
+  color: #f9fafb;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.btn-primary.full {
+  width: 100%;
+}
+
+/* Generic small input */
+.input.small {
+  height: 32px;
+  padding: 4px 10px;
+  font-size: 13px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.input.small:focus {
+  outline: none;
+  border-color: #2563eb;
+  background: #ffffff;
+}
+
+/* Chart placeholder */
+.chart-placeholder {
+  border-radius: 12px;
+  border: 1px dashed #d1d5db;
+  background: #f9fafb;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+/* Bottom section with table */
+.dashboard-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.dashboard-section-header h2 {
+  margin: 0 0 2px;
+  font-size: 15px;
+}
+
+/* Table */
+.table-wrapper {
+  overflow: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: #ffffff;
+  color: #111827;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid #eceff4;
+}
+
+.admin-table th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #9ca3af;
+  background: #f9fafb;
+}
+
+.admin-table tbody tr {
+  background: #ffffff;
+}
+
+.admin-table tbody tr:nth-child(odd) {
+  background: #f9fafb;
+}
+
+.admin-table tbody tr:hover {
+  background: #eef2ff;
+}
+/* ---------- Admin: Klinik ekleme formu ---------- */
+
+.admin-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.admin-form-header h1 {
+  font-size: 22px;
+  margin: 0 0 4px;
+}
+
+.admin-form-header .muted {
+  font-size: 13px;
+}
+
+.admin-form-header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-form-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.3fr);
+  gap: 18px;
+}
+
+@media (max-width: 960px) {
+  .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 18px 20px 20px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.03);
+  border: 1px solid #e5e7eb;
+}
+
+.form-card.slim {
+  max-width: 420px;
+}
+
+.form-card h2 {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.form-card .muted.small {
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.form-label {
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.form-input {
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  padding: 8px 10px;
+  font-size: 14px;
+  background: #f9fafb;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background: #ffffff;
+}
+
+.summary-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.summary-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+}
+
+.badge-gray {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.alert-success {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #ecfdf3;
+  color: #15803d;
+  font-size: 13px;
+}
+
+.btn-primary.full {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ikonlar az önce ayarladık, burada tekrar hatırlatma: */
+/* .kpi-icon + .kpi-blue/green/pink zaten light ve arka plansız */
+/* --- Kliniker page --- */
+
+/* --- Kliniker page --- */
+
+.clinics-page {
+  padding: 32px 56px;
+}
+
+.clinics-header {
+  margin-bottom: 24px;
+}
+
+.clinics-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.clinics-subtitle {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #6b7280;
+  max-width: 520px;
+}
+
+.clinics-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+/* Buttons – pill style */
+.btn-primary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: #111827;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #020617;
+}
+
+.btn-ghost {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+}
+
+.btn-ghost:hover {
+  background: #f9fafb;
+}
+
+.btn-icon {
+  font-size: 14px;
+}
+
+/* Card */
+.clinics-card {
+  margin-top: 8px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.04);
+  padding: 18px 22px;
+}
+
+.clinics-card-header {
+  margin-bottom: 8px;
+}
+
+.clinics-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Empty state */
+.clinics-empty {
+  font-size: 14px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+/* Table */
+.clinics-table-wrapper {
+  margin-top: 8px;
+  overflow-x: auto;
+}
+
+.clinics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.clinics-table thead tr {
+  background: #f9fafb;
+}
+
+.clinics-table th,
+.clinics-table td {
+  padding: 10px 8px;
+  text-align: left;
+}
+
+.clinics-table th {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.clinics-table td {
+  color: #111827;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.row-actions {
+  display: inline-flex;
+  gap: 6px;
+}
+
+/* Icon-only buttons */
+.btn-icon-only {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #4b5563;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.btn-icon-only:hover {
+  background: #f9fafb;
+}
+
+.btn-icon-only.danger {
+  border-color: #fecaca;
+  color: #dc2626;
+}
+
+.btn-icon-only.danger:hover {
+  background: #fef2f2;
+}
+
+/* Form */
+.clinics-form {
+  margin-top: 20px;
+}
+
+.clinics-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.clinics-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-field label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.form-field input {
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  padding: 0 10px;
+  font-size: 13px;
+  outline: none;
+}
+
+.form-field input:focus {
+  border-color: #9ca3af;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* Select & Textarea modern görünüm */
+.form-field select,
+.form-field textarea {
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  font-size: 13px;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* boyutlar */
+.form-field select {
+  height: 32px;
+  padding: 0 10px;
+}
+
+.form-field textarea {
+  padding: 8px 10px;
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* focus state */
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: #9ca3af;
+  background: #ffffff;
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.3);
+}
+
+/* Notlar alanı tam satır kaplasın */
+.form-field--full {
+  grid-column: 1 / -1;
 }
