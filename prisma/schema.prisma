@@ -1,0 +1,72 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Clinic {
+  id           String   @id @default(cuid())
+  name         String
+  type         String?   // clinic | hospital | office | other
+  country      String?
+  city         String?
+  address      String?
+  zip          String?
+  website      String?
+  email        String?
+  phone        String?
+  contactName  String?
+  contactEmail String?
+  contactPhone String?
+  status       String   @default("trial") // trial | active | paused
+  notes        String?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  doctors      Doctor[]
+}
+
+model Doctor {
+  id          String   @id @default(cuid())
+  firstName   String
+  lastName    String
+  speciality  String?
+  clinicId    String?
+  clinicName  String?
+  country     String?
+  city        String?
+  email       String?
+  phone       String?
+  whatsapp    String?
+  licenseNo   String?
+  status      String   @default("trial") // trial | active | paused
+  notes       String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  clinic      Clinic?  @relation(fields: [clinicId], references: [id])
+}
+
+model BillingSettings {
+  id                      String  @id @default(cuid())
+
+  clinicMonthlyPrice      Float
+  clinicYearlyPrice       Float
+  clinicIncludedDoctors   Int
+  clinicExtraDoctorPrice  Float
+
+  doctorMonthlyPrice      Float
+  doctorYearlyPrice       Float
+  doctorIncludedPatients  Int
+  doctorExtraPatientPrice Float
+
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}

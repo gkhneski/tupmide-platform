@@ -1,69 +1,65 @@
-"use client";
+// app/admin/page.jsx
+import prisma from "@/lib/prisma";
 
-import { FiCreditCard, FiActivity, FiUsers } from "react-icons/fi";
+export const dynamic = "force-dynamic"; // her istekte güncel veri al
 
-export default function AdminDashboardPage() {
-  const today = new Date().toLocaleDateString("tr-TR", {
-    day: "2-digit",
-    month: "short",
+export default async function AdminDashboardPage() {
+  // Şimdilik TÜM klinikleri sayalım (filtre yok)
+  const [clinicCount, doctorCount] = await Promise.all([
+    prisma.clinic.count(),
+    prisma.doctor.count(),
+  ]);
+
+  const recentClinics = await prisma.clinic.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 5,
+    select: {
+      id: true,
+      name: true,
+      createdAt: true,
+      status: true,
+    },
   });
 
   return (
-    <div className="admin-dashboard">
-      {/* TOP KPIs – sadece üç kart */}
-      <section className="admin-kpi-row">
-        <div className="kpi-card">
-          <div className="kpi-icon kpi-blue">
-            <FiCreditCard />
-          </div>
-          <div className="kpi-text">
-            <span className="kpi-label">Aylık Abonelik Geliri</span>
-            <span className="kpi-value">₺0,00</span>
-            <span className="kpi-sub">Başlangıç aşamasında</span>
-          </div>
+    <main className="admin-dashboard">
+      <section className="dashboard-header">
+        <h1 className="clinics-title">SlimIQ Tüp Mide Platformu</h1>
+        <p className="clinics-subtitle">
+          Tüm klinik, doktor ve hasta akışını tek panelden yönet.
+        </p>
+      </section>
+
+      {/* Üst kartlar */}
+      <section className="dashboard-stats">
+        <div className="stat-card">
+          <div className="stat-label">Aylık Abonelik Geliri</div>
+          <div className="stat-value">€0,00</div>
+          <div className="stat-sub">Başlangıç aşamasında</div>
         </div>
 
-        <div className="kpi-card">
-          <div className="kpi-icon kpi-green">
-            <FiActivity />
-          </div>
-          <div className="kpi-text">
-            <span className="kpi-label">Aktif Klinik</span>
-            <span className="kpi-value">0</span>
-            <span className="kpi-sub">Hedef: 50 klinik</span>
-          </div>
+        {/* 🔥 Burada artık DB'den gelen sayı */}
+        <div className="stat-card">
+          <div className="stat-label">Klinik sayısı</div>
+          <div className="stat-value">{clinicCount}</div>
+          <div className="stat-sub">Hedef: 50 klinik</div>
         </div>
 
-        <div className="kpi-card">
-          <div className="kpi-icon kpi-pink">
-            <FiUsers />
-          </div>
-          <div className="kpi-text">
-            <span className="kpi-label">Takip Edilen Hasta</span>
-            <span className="kpi-value">0</span>
-            <span className="kpi-sub">Ameliyat sonrası süreç</span>
-          </div>
+        <div className="stat-card">
+          <div className="stat-label">Doktor sayısı</div>
+          <div className="stat-value">{doctorCount}</div>
+          <div className="stat-sub">Platforma kayıtlı</div>
         </div>
       </section>
 
-      {/* ALT – sadece Son Aktivite tablosu */}
-      <section className="dashboard-section">
-        <div className="dashboard-section-header">
-          <div>
-            <h2>Son Aktivite</h2>
-            <span className="muted">
-              Sisteme eklenen klinik ve doktor kayıtlarının özeti
-            </span>
-          </div>
-          <select className="input small">
-            <option>Son 30 gün</option>
-            <option>Son 7 gün</option>
-            <option>Tümü</option>
-          </select>
+      {/* Son Aktivite */}
+      <section className="clinics-card" style={{ marginTop: 24 }}>
+        <div className="clinics-card-header">
+          <h2 className="clinics-card-title">Son Aktivite</h2>
         </div>
 
-        <div className="table-wrapper">
-          <table className="admin-table">
+        <div className="clinics-card-body">
+          <table className="clinics-table">
             <thead>
               <tr>
                 <th>Kayıt</th>
@@ -75,34 +71,39 @@ export default function AdminDashboardPage() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>#0001</td>
-                <td>Klinik</td>
-                <td>-</td>
-                <td>-</td>
-                <td>{today}</td>
-                <td>Beklemede</td>
-              </tr>
-              <tr>
-                <td>#0002</td>
-                <td>Doktor</td>
-                <td>-</td>
-                <td>-</td>
-                <td>{today}</td>
-                <td>Beklemede</td>
-              </tr>
-              <tr>
-                <td>#0003</td>
-                <td>Hasta</td>
-                <td>-</td>
-                <td>-</td>
-                <td>{today}</td>
-                <td>Beklemede</td>
-              </tr>
+              {recentClinics.map((c, index) => (
+                <tr key={c.id}>
+                  <td>{`#${String(index + 1).padStart(3, "0")}`}</td>
+                  <td>Klinik</td>
+                  <td>{c.name}</td>
+                  <td>-</td>
+                  <td>
+                    {new Date(c.createdAt).toLocaleDateString("tr-TR", {
+                      day: "2-digit",
+                      month: "short",
+                    })}
+                  </td>
+                  <td>
+                    {c.status === "active"
+                      ? "Aktif"
+                      : c.status === "trial"
+                      ? "Deneme"
+                      : c.status === "paused"
+                      ? "Askıda"
+                      : c.status}
+                  </td>
+                </tr>
+              ))}
+
+              {recentClinics.length === 0 && (
+                <tr>
+                  <td colSpan={6}>Henüz kayıt yok.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </section>
-    </div>
+    </main>
   );
 }
