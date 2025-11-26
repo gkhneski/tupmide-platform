@@ -1,12 +1,14 @@
-// app/admin/page.jsx
+// app/admin/page.js
 import prisma from "@/lib/prisma";
 
-export const dynamic = "force-dynamic"; // her istekte güncel veri al
+export const dynamic = "force-dynamic"; // immer frische Daten holen
 
 export default async function AdminDashboardPage() {
-  // Şimdilik TÜM klinikleri sayalım (filtre yok)
-  const [clinicCount, doctorCount] = await Promise.all([
-    prisma.clinic.count(),
+  // DB'den sayılar
+  const [activeClinicCount, doctorCount] = await Promise.all([
+    prisma.clinic.count({
+      where: { status: "active" }, // status: "active" olanlar = Aktif Klinik
+    }),
     prisma.doctor.count(),
   ]);
 
@@ -23,6 +25,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <main className="admin-dashboard">
+      {/* Üst başlık */}
       <section className="dashboard-header">
         <h1 className="clinics-title">SlimIQ Tüp Mide Platformu</h1>
         <p className="clinics-subtitle">
@@ -30,21 +33,23 @@ export default async function AdminDashboardPage() {
         </p>
       </section>
 
-      {/* Üst kartlar */}
+      {/* 3’lü istatistik kartları */}
       <section className="dashboard-stats">
+        {/* Aylık abonelik geliri – şimdilik sabit */}
         <div className="stat-card">
           <div className="stat-label">Aylık Abonelik Geliri</div>
           <div className="stat-value">€0,00</div>
           <div className="stat-sub">Başlangıç aşamasında</div>
         </div>
 
-        {/* 🔥 Burada artık DB'den gelen sayı */}
+        {/* 🔥 Aktif Klinik – ARTIK DB’DEN */}
         <div className="stat-card">
-          <div className="stat-label">Klinik sayısı</div>
-          <div className="stat-value">{clinicCount}</div>
+          <div className="stat-label">Aktif Klinik</div>
+          <div className="stat-value">{activeClinicCount}</div>
           <div className="stat-sub">Hedef: 50 klinik</div>
         </div>
 
+        {/* Doktor sayısı – ileride kullanışlı olur */}
         <div className="stat-card">
           <div className="stat-label">Doktor sayısı</div>
           <div className="stat-value">{doctorCount}</div>
@@ -52,10 +57,13 @@ export default async function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* Son Aktivite */}
+      {/* Son Aktivite – şimdilik sadece klinikler */}
       <section className="clinics-card" style={{ marginTop: 24 }}>
         <div className="clinics-card-header">
           <h2 className="clinics-card-title">Son Aktivite</h2>
+          <p className="clinics-subtitle">
+            Sisteme eklenen klinik kayıtlarının özeti.
+          </p>
         </div>
 
         <div className="clinics-card-body">
