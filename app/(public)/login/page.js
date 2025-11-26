@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "../lib/supabaseClient";
+// ❌ BU YANLIŞ: import { supabase } from "../lib/supabaseClient";
+// ✅ BÖYLE OLSUN:
+import { supabase } from "@/lib/supabaseClient";
 
 export default function LoginPage() {
   const router = useRouter();
