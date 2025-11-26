@@ -2,62 +2,163 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "../lib/supabaseClient";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState("doctor");
+  const [email, setEmail] = useState("admin@slimiq.info");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
-    // TODO: Buraya Supabase Auth bağlanacak.
-    // Şimdilik rol'e göre dummy yönlendirme yapıyoruz.
-    if (role === "admin") router.push("/admin/dashboard");
-    else if (role === "doctor") router.push("/clinic/dashboard");
-    else if (role === "patient") router.push("/patient/dashboard");
-  };
+    setErrorMsg("");
+    setLoading(true);
+
+    // 1) Supabase email / password login
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setErrorMsg(error.message || "Giriş yapılamadı.");
+      setLoading(false);
+      return;
+    }
+
+    const user = data?.user;
+    if (!user) {
+      setErrorMsg("Kullanıcı bulunamadı.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // 2) Önce super_admins tablosuna bak
+      const { data: superAdmin } = await supabase
+        .from("super_admins")
+        .select("id")
+        .eq("auth_user_id", user.id)
+        .maybeSingle();
+
+      if (superAdmin) {
+        router.push("/admin");
+        return;
+      }
+
+      // 3) Doktor mu?
+      const { data: doctor } = await supabase
+        .from("doctors")
+        .select("id")
+        .eq("auth_user_id", user.id)
+        .maybeSingle();
+
+      if (doctor) {
+        router.push("/doctor"); // doktor panelini sonra yapacağız
+        return;
+      }
+
+      // 4) Asistan mı?
+      const { data: assistant } = await supabase
+        .from("assistants")
+        .select("id")
+        .eq("auth_user_id", user.id)
+        .maybeSingle();
+
+      if (assistant) {
+        router.push("/assistant"); // assistant paneli sonra
+        return;
+      }
+
+      // 5) Hasta mı?
+      const { data: patient } = await supabase
+        .from("patients")
+        .select("id")
+        .eq("auth_user_id", user.id)
+        .maybeSingle();
+
+      if (patient) {
+        router.push("/patient"); // hasta paneli sonra
+        return;
+      }
+
+      // Hiçbiri değilse:
+      setErrorMsg(
+        "Hesap başarıyla giriş yaptı, fakat rol atanmadı. Lütfen yöneticiyle iletişime geçin."
+      );
+    } catch (err) {
+      console.error(err);
+      setErrorMsg("Rol kontrolü sırasında hata oluştu.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <main className="main-shell">
-      <div className="card">
-        <div className="badge">Demo Login · Sadece iskelet</div>
+      <div
+        className="card"
+        style={{
+          maxWidth: 420,
+          margin: "0 auto",
+        }}
+      >
+        <div className="badge">SlimIQ · Klinik & Hasta Takip</div>
         <h1>Giriş</h1>
         <p>
-          Buraya Supabase Auth entegre edilecek. Şimdilik rol seçip demo
-          panellere gidebilirsin.
+          Email ve şifren ile giriş yap. Rolüne göre otomatik olarak ilgili
+          panele yönlendirileceksin.
         </p>
 
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label style={{ fontSize: 12, display: "block", marginBottom: 4 }}>
-              E-posta
-            </label>
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 16 }}
+        >
+          <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <span>E-posta</span>
             <input
-              className="input"
               type="email"
-              placeholder="doktor@klinik.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label style={{ fontSize: 12, display: "block", marginBottom: 4 }}>
-              Rol
-            </label>
-            <select
               className="input"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-            >
-              <option value="admin">Süper Admin (Sen)</option>
-              <option value="doctor">Doktor / Klinik</option>
-              <option value="patient">Hasta</option>
-            </select>
-          </div>
+              placeholder="ornek@slimiq.info"
+              required
+            />
+          </label>
 
-          <button className="button" type="submit">
-            Devam et
+          <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <span>Şifre</span>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input"
+              placeholder="Şifreniz"
+              required
+            />
+          </label>
+
+          {errorMsg && (
+            <div
+              style={{
+                marginTop: 4,
+                fontSize: 13,
+                color: "#f97373",
+              }}
+            >
+              {errorMsg}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="button"
+            disabled={loading}
+            style={{ marginTop: 8 }}
+          >
+            {loading ? "Giriş yapılıyor..." : "Giriş yap"}
           </button>
         </form>
       </div>
